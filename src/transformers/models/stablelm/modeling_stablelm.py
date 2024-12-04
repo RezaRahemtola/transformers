@@ -909,7 +909,6 @@ class StableLmModel(StableLmPreTrainedModel):
                     output_attentions,
                     use_cache,
                     cache_position,
-                    position_embeddings,
                 )
             else:
                 layer_outputs = decoder_layer(
