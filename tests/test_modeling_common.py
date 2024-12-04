@@ -2633,7 +2633,7 @@ class ModelTesterMixin:
         import transformers
         from transformers.testing_utils import set_model_for_less_flaky_test, set_model_tester_for_less_flaky_test, set_config_for_less_flaky_test
 
-        set_model_tester_for_less_flaky_test(self)
+        # set_model_tester_for_less_flaky_test(self)
         for model_class in self.all_model_classes:
             config, inputs_dict = self.model_tester.prepare_config_and_inputs_for_common()
             set_config_for_less_flaky_test(config)
