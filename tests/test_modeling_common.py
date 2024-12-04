@@ -2598,6 +2598,10 @@ class ModelTesterMixin:
         if tf_loss is not None:
             tf_outputs.loss = tf.math.reduce_mean(tf_loss)
 
+        diffs = [float(np.amax(np.abs(pt_outputs["hidden_states"][idx].detach().cpu().numpy() - tf_outputs["hidden_states"][idx].numpy()))) for idx in range(len(pt_outputs["hidden_states"]))]
+        with open("all_diffs.txt", "a+") as fp:
+            fp.write(f"{pt_model.__class__.__name__}: {str(diffs)}\n")
+
         try:
             self.check_pt_tf_outputs(tf_outputs, pt_outputs, type(pt_model))
         except Exception as e:
