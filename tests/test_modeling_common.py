@@ -2696,31 +2696,29 @@ class ModelTesterMixin:
             # Original test: check without `labels`
             self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict)
 
-            # return
-            #
-            # # check with `labels`
-            # if pt_inputs_dict_with_labels:
-            #     self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict_with_labels)
-            #
-            # # Check we can load pt model in tf and vice-versa with checkpoint => model functions
-            # with tempfile.TemporaryDirectory() as tmpdirname:
-            #     pt_checkpoint_path = os.path.join(tmpdirname, "pt_model.bin")
-            #     torch.save(pt_model.state_dict(), pt_checkpoint_path)
-            #     tf_model = transformers.load_pytorch_checkpoint_in_tf2_model(
-            #         tf_model, pt_checkpoint_path, allow_missing_keys=allow_missing_keys
-            #     )
-            #
-            #     tf_checkpoint_path = os.path.join(tmpdirname, "tf_model.h5")
-            #     tf_model.save_weights(tf_checkpoint_path)
-            #     pt_model = transformers.load_tf2_checkpoint_in_pytorch_model(
-            #         pt_model, tf_checkpoint_path, allow_missing_keys=allow_missing_keys
-            #     )
-            #
-            # # Original test: check without `labels`
-            # self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict)
-            # # check with `labels`
-            # if pt_inputs_dict_with_labels:
-            #     self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict_with_labels)
+            # check with `labels`
+            if pt_inputs_dict_with_labels:
+                self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict_with_labels)
+
+            # Check we can load pt model in tf and vice-versa with checkpoint => model functions
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                pt_checkpoint_path = os.path.join(tmpdirname, "pt_model.bin")
+                torch.save(pt_model.state_dict(), pt_checkpoint_path)
+                tf_model = transformers.load_pytorch_checkpoint_in_tf2_model(
+                    tf_model, pt_checkpoint_path, allow_missing_keys=allow_missing_keys
+                )
+
+                tf_checkpoint_path = os.path.join(tmpdirname, "tf_model.h5")
+                tf_model.save_weights(tf_checkpoint_path)
+                pt_model = transformers.load_tf2_checkpoint_in_pytorch_model(
+                    pt_model, tf_checkpoint_path, allow_missing_keys=allow_missing_keys
+                )
+
+            # Original test: check without `labels`
+            self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict)
+            # check with `labels`
+            if pt_inputs_dict_with_labels:
+                self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict_with_labels)
 
     def assert_almost_equals(self, a: np.ndarray, b: np.ndarray, tol: float):
         diff = np.abs((a - b)).max()
