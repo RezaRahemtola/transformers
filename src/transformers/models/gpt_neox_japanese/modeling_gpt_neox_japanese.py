@@ -98,6 +98,7 @@ class GPTNeoXJapaneseAttention(nn.Module):
     def forward(
         self,
         hidden_states: torch.FloatTensor,
+        position_embeddings: Tuple[torch.Tensor, torch.Tensor],
         attention_mask: torch.FloatTensor,
         position_ids: torch.LongTensor,
         head_mask: Optional[torch.FloatTensor] = None,
@@ -105,7 +106,6 @@ class GPTNeoXJapaneseAttention(nn.Module):
         use_cache: Optional[bool] = False,
         output_attentions: Optional[bool] = False,
         cache_position: Optional[torch.LongTensor] = None,
-        position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
     ):
         # Compute QKV
         # Attention heads [batch, seq_len, hidden_size]
@@ -399,6 +399,7 @@ class GPTNeoXJapaneseLayer(nn.Module):
     def forward(
         self,
         hidden_states: Optional[torch.FloatTensor],
+        position_embeddings: Tuple[torch.Tensor, torch.Tensor],
         attention_mask: Optional[torch.FloatTensor] = None,
         position_ids: Optional[torch.LongTensor] = None,
         head_mask: Optional[torch.FloatTensor] = None,
@@ -406,12 +407,12 @@ class GPTNeoXJapaneseLayer(nn.Module):
         layer_past: Optional[Cache] = None,
         output_attentions: Optional[bool] = False,
         cache_position: Optional[torch.LongTensor] = None,
-        position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
     ):
         residual = hidden_states
         ln_out = self.input_layernorm(hidden_states)
         attention_layer_outputs, attn_bias = self.attention(
             ln_out,
+            position_embeddings=position_embeddings,
             attention_mask=attention_mask,
             layer_past=layer_past,
             head_mask=head_mask,
@@ -419,7 +420,6 @@ class GPTNeoXJapaneseLayer(nn.Module):
             output_attentions=output_attentions,
             position_ids=position_ids,
             cache_position=cache_position,
-            position_embeddings=position_embeddings,
         )
         attn_output = attention_layer_outputs[0]  # output_attn: a, present, (attentions)
         outputs = attention_layer_outputs[1:]
@@ -645,6 +645,7 @@ class GPTNeoXJapaneseModel(GPTNeoXJapanesePreTrainedModel):
 
             outputs = layer(
                 hidden_states,
+                position_embeddings=position_embeddings,
                 attention_mask=causal_mask,
                 position_ids=position_ids,
                 head_mask=head_mask[i],
@@ -652,7 +653,6 @@ class GPTNeoXJapaneseModel(GPTNeoXJapanesePreTrainedModel):
                 use_cache=use_cache,
                 output_attentions=output_attentions,
                 cache_position=cache_position,
-                position_embeddings=position_embeddings,
             )
             hidden_states = outputs[0]
             if use_cache is True:
