@@ -1420,10 +1420,12 @@ def set_model_for_less_flaky_test(model):
             for module in model.modules():
                 if type(module).__name__ in ["GemmaRMSNorm", "LayerNorm", "GroupNorm", "BatchNorm2d"]:
                     module.eps = 1.0
-        elif is_tf_available() and isinstance(model, tf.keras.Model):
-            for module in model.submodules():
-                if type(module).__name__ in ["LayerNormalization", "GroupNormalization", "BatchNormalization"]:
-                    module.epsilon = 1.0
+        elif is_tf_available():
+            from transformers import TFPreTrainedModel
+            if isinstance(model, TFPreTrainedModel):
+                for module in model.submodules():
+                    if type(module).__name__ in ["LayerNormalization", "GroupNormalization", "BatchNormalization"]:
+                        module.epsilon = 1.0
 
 
 class CaptureStd:
