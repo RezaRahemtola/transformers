@@ -1423,7 +1423,7 @@ def set_model_for_less_flaky_test(model):
         elif is_tf_available():
             from transformers import TFPreTrainedModel
             if isinstance(model, TFPreTrainedModel):
-                for module in model.submodules():
+                for module in model.submodules:
                     if type(module).__name__ in ["LayerNormalization", "GroupNormalization", "BatchNormalization"]:
                         module.epsilon = 1.0
 
