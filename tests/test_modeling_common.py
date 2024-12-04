@@ -2603,7 +2603,7 @@ class ModelTesterMixin:
         except Exception as e:
             diffs = [float(np.amax(np.abs(pt_outputs["hidden_states"][idx].detach().cpu().numpy() - tf_outputs["hidden_states"][idx].numpy()))) for idx in range(len(pt_outputs["hidden_states"]))]
             with open("diffs.txt", "a+") as fp:
-                fp.write(f"{str(diffs)}\n")
+                fp.write(f"{pt_model.__class__.__name__}: {str(diffs)}\n")
 
             raise e
 
