@@ -1406,6 +1406,7 @@ def set_config_for_less_flaky_test(config):
     config.norm_eps = 1.0
     config.norm_epsilon = 1.0
     config.layer_norm_epsilon = 1.0
+    config.batch_norm_eps = 1.0
 
     # norm layers (layer/group norm, etc.) could cause flaky tests when the tensors have very small variance.
     # (We don't need the original epsilon values to check eager/sdpa matches)
@@ -1416,6 +1417,7 @@ def set_config_for_less_flaky_test(config):
             getattr(config, attr).norm_eps = 1.0
             getattr(config, attr).norm_epsilon = 1.0
             getattr(config, attr).layer_norm_epsilon = 1.0
+            getattr(config, attr).batch_norm_eps = 1.0
 
 
 def set_model_for_less_flaky_test(model):
