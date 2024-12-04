@@ -2587,9 +2587,24 @@ class ModelTesterMixin:
         # Check predictions on first output (logits/hidden-states) are close enough given low-level computational differences
         pt_model.eval()
 
-        with torch.no_grad():
-            pt_outputs = pt_model(**pt_inputs_dict)
-        tf_outputs = tf_model(tf_inputs_dict)
+        def foo1(func):
+            def wrap(*args, **kwargs):
+                kwargs["eps"] = 1.0
+                return func(*args, **kwargs)
+            return wrap
+
+        def foo2(func):
+            def wrap(*args, **kwargs):
+                kwargs["epsilon"] = 1.0
+                return func(*args, **kwargs)
+            return wrap
+
+        import unittest
+        with unittest.patch.object(nn.functional, "normalize", side_effect=foo1(nn.functional.normalize)):
+            with unittest.patch.object(tf.math, "l2_normalize", side_effect=foo2(tf.math.l2_normalize)):
+                with torch.no_grad():
+                    pt_outputs = pt_model(**pt_inputs_dict)
+                tf_outputs = tf_model(tf_inputs_dict)
 
         # tf models returned loss is usually a tensor rather than a scalar.
         # (see `hf_compute_loss`: it uses `tf.keras.losses.Reduction.NONE`)
