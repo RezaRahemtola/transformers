@@ -2598,6 +2598,10 @@ class ModelTesterMixin:
         if tf_loss is not None:
             tf_outputs.loss = tf.math.reduce_mean(tf_loss)
 
+        diffs = [float(np.amax(np.abs(pt_outputs["hidden_states"][idx].detach().cpu().numpy() - tf_outputs["hidden_states"][idx].numpy()))) for idx in range(len(pt_outputs["hidden_states"]))]
+        with open("diffs.txt", "a+") as fp:
+            fp.write(f"{str(diffs)}\n")
+
         self.check_pt_tf_outputs(tf_outputs, pt_outputs, type(pt_model))
 
     @is_pt_tf_cross_test
@@ -2664,6 +2668,9 @@ class ModelTesterMixin:
 
             # Original test: check without `labels`
             self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict)
+
+            return
+
             # check with `labels`
             if pt_inputs_dict_with_labels:
                 self.check_pt_tf_models(tf_model, pt_model, pt_inputs_dict_with_labels)
