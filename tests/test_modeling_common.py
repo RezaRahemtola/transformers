@@ -2600,8 +2600,8 @@ class ModelTesterMixin:
             return wrap
 
         import unittest
-        with unittest.patch.object(nn.functional, "normalize", side_effect=foo1(nn.functional.normalize)):
-            with unittest.patch.object(tf.math, "l2_normalize", side_effect=foo2(tf.math.l2_normalize)):
+        with unittest.mock.patch.object(nn.functional, "normalize", side_effect=foo1(nn.functional.normalize)):
+            with unittest.mock.patch.object(tf.math, "l2_normalize", side_effect=foo2(tf.math.l2_normalize)):
                 with torch.no_grad():
                     pt_outputs = pt_model(**pt_inputs_dict)
                 tf_outputs = tf_model(tf_inputs_dict)
