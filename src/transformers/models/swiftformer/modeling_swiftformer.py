@@ -231,8 +231,8 @@ class SwiftFormerEfficientAdditiveAttention(nn.Module):
         query = self.to_query(x)
         key = self.to_key(x)
 
-        query = torch.nn.functional.normalize(query, dim=-1)
-        key = torch.nn.functional.normalize(key, dim=-1)
+        # query = torch.nn.functional.normalize(query, dim=-1)
+        # key = torch.nn.functional.normalize(key, dim=-1)
 
         query_weight = query @ self.w_g
         scaled_query_weight = query_weight * self.scale_factor
