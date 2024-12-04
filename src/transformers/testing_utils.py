@@ -1418,7 +1418,7 @@ def set_model_for_less_flaky_test(model):
     # Another way to make sure norm layers have desired epsilon. (Some models don't set it from its config.)
         if is_torch_available() and isinstance(model, torch.nn.Module):
             for module in model.modules():
-                if type(module).__name__ in ["GemmaRMSNorm", "LayerNorm", "GroupNorm", "BatchNorm2d"]:
+                if type(module).__name__ in ["GemmaRMSNorm", "LayerNorm", "GroupNorm", "BatchNorm2d", "BatchNorm1d"]:
                     module.eps = 1.0
         elif is_tf_available():
             from transformers import TFPreTrainedModel
