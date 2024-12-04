@@ -2599,6 +2599,9 @@ class ModelTesterMixin:
                 return func(*args, **kwargs)
             return wrap
 
+        set_model_for_less_flaky_test(pt_model)
+        set_model_for_less_flaky_test(tf_model)
+
         import unittest
         with unittest.mock.patch.object(nn.functional, "normalize", side_effect=foo1(nn.functional.normalize)):
             with unittest.mock.patch.object(tf.math, "l2_normalize", side_effect=foo2(tf.math.l2_normalize)):
