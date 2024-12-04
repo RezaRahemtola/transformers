@@ -335,8 +335,8 @@ class TFSwiftFormerEfficientAdditiveAttention(keras.layers.Layer):
         query = self.to_query(x)
         key = self.to_key(x)
 
-        # query = tf.math.l2_normalize(query, dim=-1)
-        # key = tf.math.l2_normalize(key, dim=-1)
+        query = tf.math.l2_normalize(query, dim=-1)
+        key = tf.math.l2_normalize(key, dim=-1)
 
         query_weight = query @ self.w_g
         scaled_query_weight = query_weight * self.scale_factor
